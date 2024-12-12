@@ -5,12 +5,13 @@ import { FormatterService } from '../../services/formatter.service';
 import { HttpParams } from '@angular/common/http';
 import { HeaderComponent } from "../header/header.component";
 import { FooterComponent } from "../footer/footer.component";
-import { TotalStatistics } from '../../interfaces/total-statistics';
-import { CommonModule } from '@angular/common'; // Importa CommonModule
+import { ITotalStatistics } from '../../interfaces/total-statistics';
+import { CommonModule } from '@angular/common';
+import { DailyLogTableComponent } from "../layouts/daily-log-table/daily-log-table.component"; // Importa CommonModule
 
 @Component({
   selector: 'app-get-statistics',
-  imports: [HeaderComponent, FooterComponent, CommonModule],
+  imports: [HeaderComponent, FooterComponent, CommonModule, DailyLogTableComponent],
   templateUrl: './get-statistics.component.html',
   styleUrl: './get-statistics.component.css',
   standalone: true,
@@ -19,7 +20,7 @@ export class GetStatisticsComponent {
   private request = inject(RequestService);
   protected formatter = inject(FormatterService);
 
-  statistics$!: Observable<TotalStatistics>;
+  statistics$!: Observable<ITotalStatistics>;
   statistics: any;
   error: string = ''; // Para manejar posibles errores
 
@@ -36,15 +37,5 @@ export class GetStatisticsComponent {
       error: this.handleError
     }); */
 
-  }
-
-  handleUpdateResponse(data: any): void {
-    this.statistics = data; // Al recibir la respuesta, asignamos los datos
-    console.log(this.statistics);
-  }
-
-  handleError(error: any): void {
-    this.error = 'Ocurrió un error al obtener los datos.'; // Manejo de errores
-    console.error(error);
   }
 }
