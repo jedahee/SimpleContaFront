@@ -1,0 +1,73 @@
+<div class="">
+  <div class="flex items-center justify-between pb-6">
+    <div>
+      <h2 class="font-semibold text-gray-700">Historial</h2>
+      <span class="text-xs text-gray-500">Registro diario de compra/venta de todas las tiendas</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="ml-10 space-x-8 lg:ml-40">
+        <button
+          class="flex items-center gap-2 rounded-md from-sky-600 to-sky-400 shadow-sky-500/40 bg-blue-600 transition-all duration-300 ease px-4 py-2 text-sm font-semibold text-white focus:outline-none focus:ring hover:bg-blue-700">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="h-4 w-4">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75" />
+          </svg>
+
+          DESCARGAR EXCEL
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="overflow-y-hidden rounded-lg border">
+    <div class="overflow-x-auto">
+      @if (log$ | async; as log) { <!-- Convertir en for -->
+        <table class="w-full">
+          <thead>
+            <tr
+              class="from-sky-600 to-sky-400 shadow-sky-500/40 bg-blue-600 text-left text-xs font-semibold uppercase tracking-widest text-white">
+              <th class="px-5 py-3">DESCRIPCIÓN</th>
+              <th class="px-5 py-3">CANTIDAD</th>
+              <th class="px-5 py-3">TIENDA</th>
+              <th class="px-5 py-3">FECHA</th>
+              <th class="px-5 py-3">OPERACIÓN</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-500">
+            @for (log_item of log.income; track log_item.id) {
+            <tr>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <p class="whitespace-no-wrap">{{log_item.description}}</p>
+              </td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <div class="flex items-center">
+                  <div class="h-10 w-10 flex-shrink-0">
+                    <img class="h-full w-full rounded-full"
+                      src="/images/-ytzjgg6lxK1ICPcNfXho.png" alt="" />
+                  </div>
+                  <div class="ml-3">
+                    <p class="whitespace-no-wrap">Besique Monroe</p>
+                  </div>
+                </div>
+              </td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <p class="whitespace-no-wrap">Administrator</p>
+              </td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <p class="whitespace-no-wrap">Sep 28, 2022</p>
+              </td>
+
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <span
+                  class="rounded-full bg-green-200 px-3 py-1 text-xs font-semibold text-green-900">Active</span>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+  </div>
+</div>
