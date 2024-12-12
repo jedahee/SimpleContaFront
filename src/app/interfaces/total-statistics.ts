@@ -1,4 +1,4 @@
-export interface TotalStatistics {
+export interface ITotalStatistics {
   accumulatedTotalExpense: number;
   accumulatedTotalIncome: number;
   accumulatedTotalPercentageProfit: number;
