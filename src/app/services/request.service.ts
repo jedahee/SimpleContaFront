@@ -17,7 +17,7 @@ export class RequestService {
 
   getStatistics(params: HttpParams): Observable<ITotalStatistics> {
     const MOCK_STATISTICS = {
-      accumulatedTotalExpense: 5000,
+      accumulatedTotalExpense: 50000,
       accumulatedTotalIncome: 15000,
       accumulatedTotalPercentageProfit: 30,
       accumulatedTotalProfit: 10000,
@@ -32,44 +32,23 @@ export class RequestService {
       ]
     };
 
-    // return this.http.get(this.apiUrl + '/api/statistics', { params }); // http://localhost:8080/api/statistics
-    return of(MOCK_STATISTICS);
+    return this.http.get<ITotalStatistics>(this.apiUrl + '/api/statistics', { params }); // http://localhost:8080/api/statistics
+    //return of(MOCK_STATISTICS);
   }
 
-  addAcounting(): Observable<IAddAcounting> {
-    const MOCK_ACCOUNTING_DATA: IAddAcounting = {
-      shopId: "0c5fbfdf-6e72-4481-8e71-e93fc5a751cb",
-      income: [
-        {
-          id: 1,
-          amount: 955.1,
-          incomingConcept: "DIRECT_SALE",
-          description: "venta al publico"
-        },
-        {
-          id: 2,
-          amount: 21.4,
-          incomingConcept: "DIRECT_SALE",
-          description: "Pedido juan"
-        },
-        {
-          id: 3,
-          amount: 194.2,
-          incomingConcept: "DIRECT_SALE",
-          description: "Pedido luis"
-        }
-      ],
-      expense: [
-        {
-          id: 4,
-          amount: 100.3,
-          expensingConcept: "DIRECT_BUY",
-          description: "compra huevos"
-        }
-      ],
-      date: "2024-10-11T05:47:29.886Z"
-    };
+  getAcounting(params: HttpParams): Observable<IAddAcounting[]> {
 
-    return of(MOCK_ACCOUNTING_DATA);
+
+    return this.http.get<any>(this.apiUrl + '/api/accounting', { params }); // http://localhost:8080/api/accounting
+
+    //return of(MOCK_ACCOUNTING_DATA);
+  }
+
+  getShops(): Observable<any[]> {
+
+
+    return this.http.get<any>(this.apiUrl + '/api/shop/all'); // http://localhost:8080/api/shop/all
+
+    //return of(MOCK_ACCOUNTING_DATA);
   }
 }
