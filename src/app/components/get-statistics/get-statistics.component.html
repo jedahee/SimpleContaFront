@@ -92,7 +92,7 @@
 
               <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ formatter.formatCurrency(statistics.accumulatedTotalIncome) }} €</h4>
+              {{ statistics.accumulatedTotalIncome | currency:'EUR':'symbol':'1.2-2' }}</h4>
           </div>
 
         </div>
@@ -118,7 +118,7 @@
 
               <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ formatter.formatCurrency(statistics.accumulatedTotalExpense) }} €</h4>
+              {{ statistics.accumulatedTotalExpense | currency:'EUR':'symbol':'1.2-2' }}</h4>
           </div>
 
         </div>
@@ -140,7 +140,7 @@
               Ganancias totales</p>
             <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ formatter.formatCurrency(statistics.accumulatedTotalProfit) }} €</h4>
+              {{ statistics.accumulatedTotalProfit | currency:'EUR':'symbol':'1.2-2' }}</h4>
           </div>
 
         </div>
@@ -162,7 +162,7 @@
               Porcentaje de ganancias totales</p>
             <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ formatter.formatCurrency(statistics.accumulatedTotalPercentageProfit) }} %</h4>
+              {{ statistics.accumulatedTotalPercentageProfit / 100 | percent:'1.2-2' }}</h4>
           </div>
         </div>
       </div>

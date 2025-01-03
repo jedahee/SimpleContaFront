@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RequestService } from '../../services/request.service';
 import { Observable } from 'rxjs';
-import { FormatterService } from '../../services/formatter.service';
 import { HttpParams } from '@angular/common/http';
 import { HeaderComponent } from "../header/header.component";
 import { FooterComponent } from "../footer/footer.component";
@@ -18,7 +17,6 @@ import { DailyLogTableComponent } from "../layouts/daily-log-table/daily-log-tab
 })
 export class GetStatisticsComponent {
   private request = inject(RequestService);
-  protected formatter = inject(FormatterService);
 
   statistics$!: Observable<ITotalStatistics>;
   statistics: any;
