@@ -1,13 +1,15 @@
+<app-notification></app-notification>
+
 <div class="">
-  <div class="flex items-center justify-between pb-6">
+  <div class="flex sm:items-center justify-between flex-col gap-4 sm:flex-row pb-6">
     <div>
       <h2 class="font-semibold text-gray-700">Historial</h2>
       <span class="text-xs text-gray-500">Registro diario de compra/venta de todas las tiendas</span>
     </div>
     <div class="flex items-center justify-between">
-      <div class="ml-10 space-x-8 lg:ml-40">
-        <button
-          class="flex items-center gap-2 rounded-md from-sky-600 to-sky-400 shadow-sky-500/40 bg-blue-600 transition-all duration-300 ease px-4 py-2 text-sm font-semibold text-white focus:outline-none focus:ring hover:bg-blue-700">
+      <div class="space-x-8 lg:ml-40">
+        <button (click)="downloadExcel()"
+          class="text-xs flex items-center gap-2 rounded-md from-sky-600 to-sky-400 shadow-sky-500/40 bg-blue-600 transition-all duration-300 ease px-4 py-2 sm:text-sm font-semibold text-white focus:outline-none focus:ring hover:bg-blue-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="h-4 w-4">
@@ -24,113 +26,103 @@
   <div class="space-y-4">
     <!-- Header del historial -->
     <div
-      class="mb-2 text-md w-full py-2 px-4 flex font-bold justify-between rounded-lg items-center bg-gradient-to-tr from-blue-600 to-blue-400 text-white">
-      <div class="text-left w-2/5 flex items-center h-full">Fecha</div>
-      <div class="text-left w-3/5 flex items-center h-full">Descripción</div>
-      <div class="flex w-2/5 justify-around items-center h-full">
-        <span class="flex items-center">Ingresos</span>
-        <span></span>
-        <span class="flex items-center">Gastos</span>
-        <span></span>
-        <span class="flex items-center">Beneficios</span>
-        <span></span>
-        <span></span>
+      class="mb-2 text-md w-full px-4 flex font-bold justify-between rounded-lg items-center bg-gradient-to-tr from-blue-600 to-blue-400 text-white">
+      <div class="text-left flex items-center h-full min-w-[8ch] sm:min-w-[10ch] text-sm md:text-[16px]">Fecha</div>
+      <div class="text-center flex items-center h-full text-sm md:text-[16px] max-w-[4ch] sm:max-w-[none] line-clamp-1 overflow-hidden text-ellipsis">Descripción</div>
+      <div class="flex justify-around items-center h-full w-3/4 sm:w-2/4 2xl:w-1/4">
+        <span class="flex items-center text-center text-sm md:text-[16px]">Ingresos</span>
+        <span class="invisible text-sm md:text-[16px] hidden sm:flex">-</span>
+        <span class="flex items-center text-center py-2 text-sm md:text-[16px]">Gastos</span>
+        <span class="invisible text-sm md:text-[16px] hidden sm:flex"> =</span>
+        <span class="hidden sm:flex items-center text-center py-2 px-4 text-sm md:text-[16px]">Beneficios</span>
       </div>
     </div>
-    @if (shops$ | async; as shops) {
-    @for(log_shop of logs; track log_shop; let idx = $index) {
-    <!-- Registro Diario - Día 1 -->
-    <div class="border rounded-lg bg-white shadow">
-      <!-- Botón del acordeón -->
-      <button class="w-full p-4 flex justify-between items-center text-left"
-        (click)="toggleAccordion(idx)">
-        <div class="flex items-center space-x-4 w-2/5">
-          <span class="text-gray-600 font-medium">{{ log_shop.date|date:
-            'dd-MM-yyyy' }}</span>
-        </div>
-        <div class="flex items-center space-x-4 w-3/5">
-          <span class="text-gray-600 font-medium">{{ log_shop.shop }}</span>
-        </div>
-        <!-- Iconos y totales -->
-        <div class="flex space-x-6 items-center w-2/5">
-          <span></span>
-          <div class="flex items-center space-x-1">
-            <span class="text-green-500 font-semibold">{{ log_shop.dailyIncome |
-              currency:'EUR':'symbol':'1.2-2' }}</span>
-          </div>
-          <span class="font-bold text-gray-700"> - </span>
-          <div class="flex items-center space-x-1">
-
-            <span class="text-red-500 font-semibold">{{ log_shop.dailyExpense |
-              currency:'EUR':'symbol':'1.2-2' }}</span>
-          </div>
-          <span class="font-bold text-gray-700"> = </span>
-          <div class="flex items-center space-x-1">
-            <span
-              [ngClass]="log_shop.dailyProfit > 0 ? 'bg-gradient-to-tr from-green-600 to-green-400 shadow-green-500/40' : 'bg-gradient-to-tr from-red-600 to-red-400 shadow-red-500/40'"
-              class="font-semibold text-white rounded-lg py-2 px-4">{{ log_shop.dailyProfit |
-              currency:'EUR':'symbol':'1.2-2' }}</span>
-          </div>
-        </div>
-      </button>
-
-      <!-- Contenido desplegable -->
-      <div
-        [class]="isAccordionOpen[idx] ? 'h-auto pointer-events-all opacity-100' : 'h-0 max-h-0 pointer-events-none opacity-0'"
-        class="text-left overflow-hidden transition-all border-t bg-gray-50">
-        <ul class="space-y-2 p-4">
-          <!-- Movimiento 1 -->
-          @for(transaction of log_shop.transactions; track transaction) {
-          <li
-            class="flex justify-between items-center text-left text-sm text-gray-600">
-            <div class="min-w-24 w-3/5 flex justify-between items-center text-left">
-              <span class="w-24">{{ transaction.type == 'expense' ? 'COMPRA' : 'VENTA'
+    <div class="grid gap-4" *ngIf="shops$ | async as shops">
+      @for(log_shop of logs; track log_shop; let idx = $index) {
+        <div>
+          <div
+            class="flex items-center justify-between border rounded-lg bg-white shadow transition-all duration-300 ease cursor-pointer border-1 hover:border-1 hover:border-blue-500">
+            <button class="w-full p-4 flex justify-between items-center text-left gap-2"
+              (click)="toggleAccordion(idx)">
+              <span class="text-sm md:text-[16px] text-gray-600 font-medium text-left">{{
+                log_shop.date|date:'dd-MM-yyyy' }}</span>
+              <span class="text-sm md:text-[16px] text-gray-600 font-medium text-center max-w-[2.5ch] sm:max-w-[none] line-clamp-1 overflow-hidden text-ellipsis">{{ log_shop.shop
                 }}</span>
-              <span
-                class="text-left max-w-32 line-clamp-3 overflow-hidden text-ellipsis">Venta
-                {{ transaction.description }}
-              </span>
-              <span></span>
-            </div>
-            <div class="flex justify-between items-center text-left w-1/3">
-              <span></span>
-              <span></span>
-              @if(transaction.type === "expense") {
-                <div class="flex flex-col items-start">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span class="font-bold text-gray-600 text-right"></span>
+              <div class="flex justify-around items-center h-full w-3/4 sm:w-2/4 2xl:w-1/4">
+                <div class="flex items-center space-x-1">
+                  <span class="text-sm md:text-[16px] text-green-500 font-semibold text-center">{{
+                    log_shop.dailyIncome |
+                    currency:'EUR':'symbol':'1.2-2' }}</span>
                 </div>
-                <span></span>
-                <div class="flex flex-col items-center">
-                  <span class="text-red-600 font-bold text-right">- {{
-                    transaction.amount | currency:'EUR':'symbol':'1.2-2' }}</span>
+                <span class="text-sm md:text-[16px] font-bold text-gray-700 hidden sm:flex"> - </span>
+                <div class="flex items-center space-x-1">
+                  <span class="text-sm md:text-[16px] text-red-500 font-semibold text-center">{{
+                    log_shop.dailyExpense |
+                    currency:'EUR':'symbol':'1.2-2' }}</span>
                 </div>
-              } @else if (transaction.type === "income") {
-                <div class="flex flex-col items-center">
-                  <span class="text-green-600 font-bold text-left mr-2">+ {{
-                    transaction.amount | currency:'EUR':'symbol':'1.2-2' }}</span>
+                <span class="text-sm md:text-[16px] font-bold text-gray-700 hidden sm:flex"> = </span>
+                <div class="hidden sm:flex items-center space-x-1">
+                  <span
+                    [ngClass]="log_shop.dailyProfit > 0 ? 'bg-gradient-to-tr from-green-600 to-green-400 shadow-green-500/40' : 'bg-gradient-to-tr from-red-600 to-red-400 shadow-red-500/40'"
+                    class="text-sm md:text-[16px] font-semibold text-white rounded-lg py-2 px-4 text-center">{{
+                    log_shop.dailyProfit |
+                    currency:'EUR':'symbol':'1.2-2' }}</span>
                 </div>
-                <span></span>
-                <span></span>
+              </div>
+            </button>
 
-                <div class="flex flex-col items-center">
-                  <span class="font-bold text-gray-600"></span>
+
+          </div>
+          <div
+            [class]="isAccordionOpen[idx] ? 'h-auto pointer-events-all opacity-100 mt-0' : 'h-0 max-h-0 hidden pointer-events-none opacity-0'"
+            class="cursor-default text-left overflow-hidden transition-all border-t bg-gray-50 rounded-e-lg rounded-s-lg">
+            <ul class="space-y-2 p-4">
+              <!-- Movimiento 1 -->
+              @for(transaction of log_shop.transactions; track transaction) {
+              <li class="flex justify-between items-center text-sm text-gray-600">
+                <span class="text-left sm:mr-0  sm:min-w-[10ch]">{{ transaction.type == 'expense' ?
+                  'COMPRA' :
+                  'VENTA'}}</span>
+                <span
+                  class="hidden sm:block sm:max-w-32 sm:line-clamp-3 overflow-hidden text-ellipsis">
+                  {{ transaction.description }}
+                </span>
+                <div class="flex ml-8 sm:ml-0 justify-around items-center h-full w-3/4 sm:w-2/4 2xl:w-1/4">
+                  @if(transaction.type === "expense") {
+                  <div class="flex flex-col items-start min-w-[8ch]">
+                    <span class="font-bold text-gray-600 text-center"></span>
+                  </div>
+                  <span class="invisible ml-8">-</span>
+                  <div class="flex flex-col items-center">
+                    <span class="text-red-600 font-bold text-center text-xs whitespace-nowrap mr-2 sm:mr-0 sm:text-sm">- {{
+                      transaction.amount | currency:'EUR':'symbol':'1.2-2' }}</span>
+                  </div>
+                  } @else if (transaction.type === "income") {
+                  <div class="flex flex-col items-center">
+                    <span class="pl-6 sm:pl-0 text-green-600 font-bold text-center whitespace-nowrap text-xs ml-2 sm:ml-0 sm:text-sm">+ {{
+                      transaction.amount | currency:'EUR':'symbol':'1.2-2' }}</span>
+                  </div>
+                  <span class="invisible ml-4">-</span>
+                  <div class="flex flex-col items-center min-w-[8ch]">
+                    <span class="font-bold text-gray-600"></span>
+                  </div>
+                  }
+
+                  <span class="invisible ml-10 hidden sm:flex"> =</span>
+                  <div class="items-center space-x-1 hidden sm:flex">
+                    <span
+                      class="font-semibold text-white rounded-lg py-2 px-4 text-center">{{
+                      log_shop.dailyProfit |
+                      currency:'EUR':'symbol':'1.2-2' }}</span>
+                  </div>
                 </div>
+              </li>
               }
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </li>
-          }
-        </ul>
-      </div>
-    </div>
-        }
+            </ul>
+          </div>
+        </div>
       }
+    </div>
   </div>
 
 </div>
