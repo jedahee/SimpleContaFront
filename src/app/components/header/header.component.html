@@ -1,12 +1,14 @@
 <aside
-  class="bg-gradient-to-br from-gray-800 to-gray-900 -translate-x-80 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0">
+  [ngClass]="isOpen ? 'translate-x-0' : '-translate-x-80'"
+  class="bg-gradient-to-br from-gray-800 to-gray-900 -translate-x-80 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] sm:w-72 w-64 rounded-xl transition-transform duration-300 xl:translate-x-0 right-4">
   <div class="relative border-b border-white/20">
-    <a class="flex items-center gap-4 py-6 px-8" href="#/">
+    <span class="flex items-center gap-4 py-6 px-8">
       <h6
         class="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white">
         {{ actual_site_text }}</h6>
-    </a>
+    </span>
     <button
+      (click)="closeMenu()"
       class="middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-8 max-w-[32px] h-8 max-h-[32px] rounded-lg text-xs text-white hover:bg-white/10 active:bg-white/30 absolute right-0 top-0 grid rounded-br-none rounded-tl-none xl:hidden"
       type="button">
       <span
@@ -20,10 +22,10 @@
       </span>
     </button>
   </div>
-  <div class="m-4">
+  <div class="m-4 h-[calc(100%-100px)]">
     <ul class="mb-4 flex flex-col gap-1">
       <li>
-        <div (click)="changeActualSite('Cuentas globales')">
+        <div (click)="emitShop('Cuentas globales', undefined)">
           <button
             [ngClass]="actual_site_text == 'Cuentas globales' ? 'bg-gradient-to-tr from-blue-600 to-blue-400 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] rounded-lg' : ''"
             class="text-white middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg w-full flex items-center gap-4 px-4 capitalize"
@@ -43,7 +45,7 @@
       </li>
       @if (shops$ | async; as shops) {
         @for(shop of shops; track shop.id) {
-          <li [ngClass]="actual_site_text == 'Cuentas '+shop.name ? 'bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] rounded-lg' : ''" (click)="changeActualSite('Cuentas '+shop.name)">
+          <li [ngClass]="actual_site_text == 'Cuentas '+shop.name ? 'bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] rounded-lg' : ''" (click)="emitShop('Cuentas '+shop.name, shop)">
             <div [attr.data-id]="shop.id">
               <button
                 class="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
@@ -88,5 +90,21 @@
         </div>
       </li>
     </ul>
+    <li [routerLink]="['/dailyAccounting']" class="absolute left-4 right-4 bottom-4">
+      <div class="flex items-center">
+        <button
+          class="bg-gradient-to-tr from-blue-600 to-blue-400 shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-white/10 active:bg-white/30 w-full flex items-center gap-4 px-4"
+          type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            viewBox="0 0 24 24"
+            style="fill: rgba(249, 249, 249, 1);">
+            <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path>
+          </svg>
+          <p
+            class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium">
+            Añadir cuenta</p>
+        </button>
+      </div>
+    </li>
   </div>
 </aside>
