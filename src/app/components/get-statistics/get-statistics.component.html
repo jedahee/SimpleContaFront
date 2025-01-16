@@ -1,57 +1,53 @@
+<app-notification></app-notification>
+
 <!-- Main statistics -->
 <div class="min-h-screen bg-gray-50/50">
-  <app-header></app-header>
+  <app-header [isOpen]="isOpen" (closeSidebar)="isOpen = false" (shopsExport)="setShops($event)" (shopChange)="setShop($event)"></app-header>
 
   <div class="p-4 sm:p-10 xl:ml-80">
     <nav
       class="block w-full max-w-full bg-transparent text-white shadow-none rounded-xl transition-all px-0 py-1">
       <div
-        class="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
-        <div class="capitalize">
+        class="flex flex-col gap-6 md:flex-row md:items-center">
+        <div class="">
           <h6
-            class="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">
-            Datos globales</h6>
+            class="text-center xl:text-left block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">
+            {{ filter_selected }}</h6>
+            <p class="text-gray-900 text-sm font-semibold text-center">
+              <span>{{ filter_selected != "Todos los datos" ? '('+(from_copy|date:'dd-MM-yyyy') + ' hasta ' : '' }}</span>
+
+              <span>{{ filter_selected != "Todos los datos" ? (to|date:'dd-MM-yyyy')+')' : '' }}</span>
+            </p>
         </div>
-        <span class="text-gray-500 font-semibold text-sm">|</span>
-        <span class="text-gray-500 font-semibold text-sm">Últimos 30 días</span>
-        <span class="text-gray-500 font-semibold text-sm">Últimos 14 días</span>
-        <span class="text-gray-500 font-semibold text-sm">Últimos 7 días</span>
-        <div class="flex">
-          <div class="relative max-w-sm">
-            <div
-              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                viewBox="0 0 20 20">
-                <path
-                  d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-              </svg>
-            </div>
-            <input id="datepicker-format-start" datepicker datepicker-format="dd-mm-yyyy"
-              type="text"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Select date">
-          </div>
-          <span>to</span>
-          <div class="relative max-w-sm">
-            <div
-              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                viewBox="0 0 20 20">
-                <path
-                  d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-              </svg>
-            </div>
-            <input id="datepicker-format-end" datepicker datepicker-format="dd-mm-yyyy"
-              type="text"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Select date">
-          </div>
+        <span
+          class="hidden md:block text-gray-500 font-semibold text-sm transition-all duration-300 ease">|</span>
+        <div class="grid gap-2 w-full lg:w-[75%] grid-cols-3 lg:grid-cols-5 justify-items-center items-center">
+          <span
+            class="w-full rounded-lg h-full flex items-center justify-center py-2 px-6 font-semibold text-sm transition-all duration-300 ease cursor-pointer text-white text-center"
+            [ngClass]="filter_selected.toLowerCase() == 'todos los datos' ? 'bg-blue-600' : 'hover:bg-blue-500 bg-blue-400' "
+            (click)="updateFromTo('all')">Todos los datos</span>
+          <span
+            class="w-full rounded-lg h-full flex items-center justify-center py-2 px-6 font-semibold text-sm transition-all duration-300 ease cursor-pointer text-white text-center"
+            [ngClass]="filter_selected.toLowerCase() == 'último año' ? 'bg-blue-600' : 'hover:bg-blue-500 bg-blue-400' "
+            (click)="updateFromTo('1a')">Último año</span>
+          <span
+            class="w-full rounded-lg h-full flex items-center justify-center py-2 px-6 font-semibold text-sm transition-all duration-300 ease cursor-pointer text-white text-center"
+            [ngClass]="filter_selected.toLowerCase() == 'últimos 6 meses' ? 'bg-blue-600' : 'hover:bg-blue-500 bg-blue-400' "
+            (click)="updateFromTo('6m')">Últimos 6 meses</span>
+          <span
+            class="w-full rounded-lg h-full flex items-center justify-center py-2 px-6 font-semibold text-sm transition-all duration-300 ease cursor-pointer text-white text-center"
+            [ngClass]="filter_selected.toLowerCase() == 'últimos 3 meses' ? 'bg-blue-600' : 'hover:bg-blue-500 bg-blue-400' "
+            (click)="updateFromTo('3m')">Últimos 3 meses</span>
+          <span
+            class="w-full rounded-lg h-full flex items-center justify-center py-2 px-6 font-semibold text-sm transition-all duration-300 ease cursor-pointer text-white text-center"
+            [ngClass]="filter_selected.toLowerCase() == 'último mes' ? 'bg-blue-600' : 'hover:bg-blue-500 bg-blue-400' "
+            (click)="updateFromTo('1m')">Último mes</span>
+
         </div>
-        <div class="flex items-center">
+
+        <div class="flex items-center" (click)="changeIsOpen()">
           <button
-            class="relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 grid xl:hidden"
+            class="absolute top-3 sm:top-8 right-3 md:top-auto md:right-auto md:relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 grid xl:hidden"
             type="button">
             <span
               class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
@@ -67,7 +63,7 @@
         </div>
       </div>
     </nav>
-    @if (statistics$ | async; as statistics) {
+    <ng-container *ngIf="statistics$ | async as statistics">
     <div class="mt-12">
       <div class="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         <div
@@ -92,7 +88,7 @@
 
               <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ statistics.accumulatedTotalIncome | currency:'EUR':'symbol':'1.2-2' }}</h4>
+              {{ statistics.accumulatedStartToEndDateIncome | currency:'EUR':'symbol':'1.2-2' }}</h4>
           </div>
 
         </div>
@@ -118,7 +114,7 @@
 
               <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ statistics.accumulatedTotalExpense | currency:'EUR':'symbol':'1.2-2' }}</h4>
+              {{ statistics.accumulatedStartToEndDateExpense | currency:'EUR':'symbol':'1.2-2' }}</h4>
           </div>
 
         </div>
@@ -140,7 +136,7 @@
               Ganancias totales</p>
             <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ statistics.accumulatedTotalProfit | currency:'EUR':'symbol':'1.2-2' }}</h4>
+              {{ statistics.accumulatedStartToEndDateProfit | currency:'EUR':'symbol':'1.2-2' }}</h4>
           </div>
 
         </div>
@@ -162,14 +158,14 @@
               Porcentaje de ganancias totales</p>
             <h4
               class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-              {{ statistics.accumulatedTotalPercentageProfit / 100 | percent:'1.2-2' }}</h4>
+              {{ statistics.accumulatedStartToEndDatePercentageProfit / 100 | percent:'1.2-2' }}</h4>
           </div>
         </div>
       </div>
 
-      <app-daily-log-table></app-daily-log-table>
+      <app-daily-log-table [shopsObservable]="shops$" [shopSelected]="selectedShop" [from]="from" [to]="to"></app-daily-log-table>
     </div>
-    }
+    </ng-container>
     <div class="text-blue-gray-600">
       <app-footer></app-footer>
     </div>
