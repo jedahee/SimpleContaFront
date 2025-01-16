@@ -10,7 +10,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   // Verificar si existe un token válido
   const token = authService.getToken();
 
-  if (token) {
+  if (token && (typeof window !== 'undefined')) {
     // Si el token está presente, permite el acceso
     return true;
   }

@@ -6,9 +6,11 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService); // Inyección del servicio AuthService
   const router = inject(Router);
 
+  if (typeof window === 'undefined') router.navigate(['https://google.com']);
+
+  const authService = inject(AuthService); // Inyección del servicio AuthService
   const token = authService.getToken();
 
   if (token) {
@@ -18,11 +20,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
     return next(clonedRequest).pipe(
       catchError((error) => {
-        console.log()
+
         if (error.status === 401) {
           authService.logout(); // Limpia cualquier dato de sesión almacenado
           router.navigate(['/login']); // Redirige al login
         }
+
         return throwError(() => error);
       })
     );
