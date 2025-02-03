@@ -11,6 +11,7 @@ import { DailyAccountingService } from '../../services/daily-accounting.service'
 import { Datepicker } from 'flowbite';
 import { ErrorService } from '../../services/error.service';
 import { NotificationComponent } from '../notification/notification.component';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-daily-accounting',
@@ -24,12 +25,13 @@ export class DailyAccountingComponent {
   private dailyAccountingService = inject(DailyAccountingService);
   private router = inject(Router);
   private errorService = inject(ErrorService);
+  private loaderService = inject(LoaderService);
 
   dailyAccountingForm: FormGroup;
   today_date: string = this.formatDateToSpanish(new Date());
   shops$!: Observable<any[]>;
   shops: any;
-  shop_selected: string = ""
+  shop_selected: string = "";
   amount_expense: number = 0;
   amount_income: number = 0;
 
@@ -51,15 +53,12 @@ export class DailyAccountingComponent {
   }
 
   ngAfterViewInit(): void {
-
     const datepickerInput = document.getElementById('datepicker-format-accounting');
     if (datepickerInput) {
-
       let datepicker = new Datepicker(datepickerInput, {
         format: 'dd-mm-yyyy', // Configuración del formato de fecha
         language: 'es', // Idioma español
         autohide: true,
-         // Usa directamente el objeto de locales para español
       });
 
       datepickerInput.addEventListener('changeDate', this.onDateChange.bind(this));
@@ -69,7 +68,7 @@ export class DailyAccountingComponent {
   onDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.today_date = input.value;
-    this.dailyAccountingForm.patchValue({'date':this.today_date})
+    this.dailyAccountingForm.patchValue({ date: this.today_date });
   }
 
   calculateExpense(): void {
@@ -90,24 +89,22 @@ export class DailyAccountingComponent {
   }
 
   ngOnInit(): void {
-
     this.request.getShops().subscribe({
       next: (responses) => {
         this.shops = responses;
-        this.setShop(this.shops[0].id, this.shops[0].name)
+        this.setShop(this.shops[0].id, this.shops[0].name);
       },
       error: (error) => {
         const message = this.errorService.getErrorMessage(error.status, error.message);
         this.errorService.setErrorMessage(message);
       },
-      complete: () => {}
+      complete: () => { },
     });
   }
 
   setShop(shopId: string, shopName: string): void {
     this.dailyAccountingForm.patchValue({ shopId });
     this.shop_selected = shopName;
-
   }
 
   // Getters para los FormArrays
@@ -193,17 +190,21 @@ export class DailyAccountingComponent {
       const date = new Date(year, month - 1, day);
       formData.date = date.toISOString(); // Formato ISO-8601
 
+      this.loaderService.show();
       this.dailyAccountingService.createDailyAccounting(formData).subscribe({
-        next: (response) => { this.router.navigate(["/home"]) },
+        next: (response) => {
+          this.loaderService.hide();
+          this.router.navigate(['/home']);
+        },
         error: (error) => {
+          this.loaderService.hide();
           const message = this.errorService.getErrorMessage(error.status, error.message);
           this.errorService.setErrorMessage(message);
         },
       });
     } else {
-      const message = this.errorService.getErrorMessage(0, "El formulario es inválido");
+      const message = this.errorService.getErrorMessage(0, 'El formulario es inválido');
       this.errorService.setErrorMessage(message);
     }
   }
 }
-
