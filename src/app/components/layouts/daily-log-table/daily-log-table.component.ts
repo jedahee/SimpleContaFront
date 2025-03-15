@@ -83,9 +83,7 @@ export class DailyLogTableComponent implements OnChanges {
       )
       .subscribe({
         next: (responses) => {
-          console.log(responses)
           this.logs = this.processResponses(responses);
-          console.log(this.logs)
           this.logs_excel = responses;
         },
         error: (error) => {
@@ -115,7 +113,6 @@ export class DailyLogTableComponent implements OnChanges {
     this.request.getAcounting(params).subscribe({
       next: (response) => {
         this.logs = this.processResponses([response]);
-        console.log(`Datos para la tienda ${this.shopSelected.name}:`, this.logs);
       },
       error: (error) => {
         const message = this.errorService.getErrorMessage(error.status, error.message);
@@ -147,7 +144,7 @@ export class DailyLogTableComponent implements OnChanges {
 
           return {
             ...item, // Mantener todas las propiedades originales del item
-            shop: responses.length > 1 ? index === 0 ? 'Villegas' : 'Santa Aurelia' : this.shopSelected.name, // Asignar la propiedad "source"
+            shop: responses.length > 1 ? index === 1 ? 'Villegas' : 'Santa Aurelia' : this.shopSelected.name, // Asignar la propiedad "source"
             transactions: mergedTransactions // Agregar el array combinado
           };
         })
