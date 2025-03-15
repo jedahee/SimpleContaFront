@@ -144,7 +144,6 @@ export class GetStatisticsComponent {
         }
       },
       error: (error) => {
-        console.log(error);
         const message = this.errorService.getErrorMessage(error.status, error.message);
         this.errorService.setErrorMessage(message);
         setTimeout(() => {
