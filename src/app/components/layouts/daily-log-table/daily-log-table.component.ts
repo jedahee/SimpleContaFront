@@ -94,7 +94,6 @@ export class DailyLogTableComponent implements OnChanges {
       .subscribe({
         next: (responses) => {
           this.logs = this.processResponses(responses);
-          console.log(this.logs)
           this.logs_excel = responses;
         },
         error: (error) => {

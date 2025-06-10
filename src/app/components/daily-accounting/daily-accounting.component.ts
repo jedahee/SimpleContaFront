@@ -96,7 +96,6 @@ export class DailyAccountingComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.accountingId = params.get('id') ?? '';
-      console.log(this.accountingId)
       this.isEditMode = !!this.accountingId;
       if (this.isEditMode) {
         this.loadAccountingData(this.accountingId);
@@ -125,9 +124,6 @@ export class DailyAccountingComponent {
         this.setShop(data.shopId, data.shopName);
         this.today_date = this.formatDateToSpanish(new Date(data.date));
         this.dailyAccountingForm.patchValue({ date: this.today_date });
-
-
-        console.log(data)
 
         // Añadir ingresos
         data.listOfIncomes.forEach((income: any) => {
