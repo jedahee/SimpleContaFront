@@ -8,5 +8,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: GetStatisticsComponent, canActivate: [authGuard] },
   { path: 'dailyAccounting', component: DailyAccountingComponent, canActivate: [authGuard] },
+  { path: 'dailyAccounting/edit/:id', component: DailyAccountingComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' },
 ];

@@ -33,11 +33,13 @@ export class GetStatisticsComponent {
   from_copy: any;
   to: any = "2055-12-31T23:59:59Z";
   shops$!: Observable<any>;
+  actualTime: string = 'all'; // Valor por defecto para mostrar todos los datos
 
   updateFromTo(time: string): void {
     let days = 0;
     let months = 0;
     let years = 0;
+    this.actualTime = time;
 
     let suffix_time_allowed = ['a', 'm', 's', 'd']
     if (time != 'all' && time.length == 2 && typeof Number(time.charAt(0)) === 'number' && typeof time.charAt(1) === 'string' && suffix_time_allowed.includes(time.charAt(1))) {
