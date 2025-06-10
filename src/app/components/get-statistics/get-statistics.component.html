@@ -163,7 +163,7 @@
         </div>
       </div>
 
-      <app-daily-log-table [shopsObservable]="shops$" [shopSelected]="selectedShop" [from]="from" [to]="to"></app-daily-log-table>
+      <app-daily-log-table (updateStatistics)="updateFromTo(actualTime)" [shopsObservable]="shops$" [shopSelected]="selectedShop" [from]="from" [to]="to"></app-daily-log-table>
     </div>
     </ng-container>
     <div class="text-blue-gray-600">

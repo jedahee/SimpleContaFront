@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { RequestService } from '../../../services/request.service';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
@@ -10,16 +10,20 @@ import { LoaderService } from '../../../services/loader.service';
 import { NotificationComponent } from '../../notification/notification.component';
 import { ExcelService } from '../../../services/excel.service';
 import { Accordion } from 'flowbite';
+import { PanelConfirmationComponent } from '../../panel-confirmation/panel-confirmation.component';
+import { DailyAccountingService } from '../../../services/daily-accounting.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-daily-log-table',
-  imports: [CommonModule, NotificationComponent],
+  imports: [CommonModule, NotificationComponent, PanelConfirmationComponent, RouterLink],
   templateUrl: './daily-log-table.component.html',
   styleUrl: './daily-log-table.component.css',
   standalone: true,
 })
 export class DailyLogTableComponent implements OnChanges {
   private request = inject(RequestService);
+  private dailyAccounting = inject(DailyAccountingService);
   private loader = inject(LoaderService);
   private errorService = inject(ErrorService);
   private excelService = inject(ExcelService);
@@ -29,11 +33,17 @@ export class DailyLogTableComponent implements OnChanges {
   logs: any;
   logs_excel: any;
   error: string = ''; // Para manejar posibles errores
+  shopAccountingDelete: string = '';
+  dateAccountingDelete: string = '';
+  idAccountingDelete: string = ''
+  panelActive: boolean = false; // Para manejar el estado del panel de confirmación
 
   @Input() shopSelected!: any;
   @Input() shopsObservable!: any;
   @Input() from: any;
   @Input() to: any;
+
+  @Output() updateStatistics = new EventEmitter<void>();
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['shopSelected'] || changes['from'] || changes['to']) {
@@ -84,6 +94,7 @@ export class DailyLogTableComponent implements OnChanges {
       .subscribe({
         next: (responses) => {
           this.logs = this.processResponses(responses);
+          console.log(this.logs)
           this.logs_excel = responses;
         },
         error: (error) => {
@@ -155,5 +166,42 @@ export class DailyLogTableComponent implements OnChanges {
 
   toggleAccordion(id: number): void {
     this.isAccordionOpen[id] = !this.isAccordionOpen[id]; // Alternar el estado abierto/cerrado
+  }
+
+  deleteAccountingPanel(id: string, date: string, shop: string): void {
+    this.panelActive= true;
+    this.shopAccountingDelete = shop;
+    this.dateAccountingDelete = date;
+    this.idAccountingDelete = id;
+  }
+
+  onConfirm() {
+    this.panelActive = false;
+    // Additional logic for confirming the action
+
+    this.dailyAccounting.deleteDailyAccounting(this.idAccountingDelete).subscribe({
+      next: () => {
+        if (this.shopSelected)
+          this.fetchDataForSingleShop(); // Fetch para un único shop
+        else
+          this.fetchDataForAllShops(); // Fetch para todos los shops
+
+        this.updateStatistics.emit(); // Emitir evento para actualizar estadísticas
+      },
+      error: (error) => {
+        const message = this.errorService.getErrorMessage(error.status, error.message);
+        this.errorService.setErrorMessage(message);
+      }
+    });
+    this.shopAccountingDelete = '';
+    this.dateAccountingDelete = '';
+    this.idAccountingDelete = '';
+  }
+
+  onCancel() {
+    this.panelActive = false;
+    this.shopAccountingDelete = '';
+    this.dateAccountingDelete = '';
+    this.idAccountingDelete = '';
   }
 }

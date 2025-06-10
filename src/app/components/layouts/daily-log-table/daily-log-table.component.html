@@ -1,5 +1,6 @@
 <app-notification></app-notification>
-
+<app-panel-confirmation *ngIf="panelActive" [shop]="shopAccountingDelete" [date]="dateAccountingDelete"
+  (confirm)="onConfirm()" (cancel)="onCancel()"></app-panel-confirmation>
 <div class="">
   <div class="flex sm:items-center justify-between flex-col gap-4 sm:flex-row pb-6">
     <div>
@@ -70,8 +71,6 @@
                 </div>
               </div>
             </button>
-
-
           </div>
           <div
             [class]="isAccordionOpen[idx] ? 'h-auto pointer-events-all opacity-100 mt-0' : 'h-0 max-h-0 hidden pointer-events-none opacity-0'"
@@ -119,6 +118,20 @@
               </li>
               }
             </ul>
+          </div>
+          <div
+            [class]="isAccordionOpen[idx] ? 'pointer-events-all opacity-100 mt-0' : 'hidden pointer-events-none opacity-0'"
+            class="mt-4 p-absolute right-4 top-4 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
+
+            <button [routerLink]="['/dailyAccounting/edit', log_shop.id]"
+              class="w-full sm:w-auto text-white bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              Editar cuenta
+            </button>
+            <button
+              (click)="deleteAccountingPanel(log_shop.id, log_shop.date, log_shop.shop)"
+              class="w-full sm:w-auto text-white bg-gradient-to-r from-red-600 via-red-500 to-red-400 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              Borrar cuenta
+            </button>
           </div>
         </div>
       }
