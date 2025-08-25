@@ -59,7 +59,7 @@ export class DailyLogTableComponent implements OnChanges {
   }
 
   downloadExcel(): void {
-    this.excelService.exportToExcel(this.logs_excel, 'Cuentas tiendas');
+    this.excelService.exportToExcelWithFormat(this.logs_excel, 'Cuentas tiendas');
   }
 
 
