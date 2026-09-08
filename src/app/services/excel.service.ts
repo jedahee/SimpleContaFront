@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx-js-style';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
